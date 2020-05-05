@@ -1,0 +1,54 @@
+<html>
+    <body>
+        <head>
+            <style>
+                td{
+                    padding: 10px;
+                }
+                button {
+                background-color: #4CAF50;
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                cursor: pointer;
+                }
+            </style>
+        </head>
+        <form action = 'http://127.0.0.1:5000/results' method='POST'>
+            <center><button>Submit</button></center>
+            <h1>Questionnaire</h1>
+            <table>
+                <tr>
+                </tr>
+                    {% for row in result %}
+                        {% for key,value in row.items() %}
+                        <tr>
+                                <td><strong>{{key}}</strong></td>
+                                <td align="center">
+                                    <input type='radio' name={{value}} value="0" checked hidden>
+                                    <input type='radio' name={{value}} value="1"><label for='1'>Strongly Disagree</label>
+                                </td>
+                                <td align="center">
+                                    <input type='radio' name={{value}} value="2"><label for='2'>Partially Disagree</label>
+                                </td>
+                                <td align="center">
+                                    <input type='radio' name={{value}} value="3"><label for='3'>Neutral</label>
+                                </td>
+                                <td align="center">
+                                    <input type='radio' name={{value}} value="4"><label for='4'>Partially Agree</label>
+                                </td>
+                                <td align="center">
+                                    <input type='radio' name={{value}} value="5"><label for='5'>Strongly Agree</label>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+            </table>
+        </form>
+    </body>
+</html>
