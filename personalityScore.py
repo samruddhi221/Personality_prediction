@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+
 import scipy.stats as stats
 
 class Big5():
@@ -104,8 +106,50 @@ class Big5():
         result_dict['percentiles'] = perc_dict
         result_dict['scores'] = score_dict
         
-        return(result_dict)
+        rec_list = self.get_list_recommendations(score_dict)
+        print(rec_list)
+
+        result_dict["recommendations"] = rec_list
         
+        return(result_dict)
+
+    def get_list_recommendations(self, sim_scores):
+        user_score = np.array([sim_scores['O_score'], sim_scores['C_score'], sim_scores['E_score'], sim_scores['A_score'], sim_scores['N_score']])
+        
+        all_user_sim = pd.read_csv('data/personality_predictions.csv')
+
+        arr1 = all_user_sim.values
+
+        cosine_sim = []
+
+        for row in arr1:
+            comp_row = row[1:]
+            sim = np.dot(user_score, comp_row)/ (np.linalg.norm(user_score) * np.linalg.norm(comp_row))
+            
+            cosine_sim.append(sim)
+        np_cosine = np.array(cosine_sim).reshape(-1,1)
+
+
+        sims = np.hstack((arr1,np_cosine))
+        sims_df = pd.DataFrame(data=sims,columns=['UserIds', 'sOPN', 'sCON', 'sEXT', 'sAGR', 'sNEU', 'similarity_scores'])
+        sorted_sims_df = sims_df.sort_values(by=["similarity_scores"], ascending=False)
+        top_rec = sorted_sims_df.iloc[:10]
+
+        final_list = []
+        top_np = top_rec.to_numpy()
+
+        for rec in top_np:
+            rec_user = {}
+            rec_user['UserId'] = rec[0]
+            rec_user['sOPN'] = rec[1]
+            rec_user['sCON'] = rec[2]
+            rec_user['sEXT'] = rec[3]
+            rec_user['sAGR'] = rec[4]
+            rec_user['sNEU'] = rec[5]
+            final_list.append(rec_user)
+        
+        return final_list
+    
     def calc_score(self, df):
         score = []
         for row in df.values:
@@ -123,4 +167,4 @@ class Big5():
         self.df['C_score'] = self.calc_score(self.df[C_columns])
         self.df['E_score'] = self.calc_score(self.df[E_columns])
         self.df['A_score'] = self.calc_score(self.df[A_columns])
-        self.df['N_score'] = self.calc_score(self.df[N_columns])	
+        self.df['N_score'] = self.calc_score(self.df[N_columns])
