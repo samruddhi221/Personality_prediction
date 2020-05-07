@@ -1,0 +1,74 @@
+<html>
+    <body>
+        <div>
+            <table border='1' style="width: 300px;">
+                <tr>
+                    <th>
+                        Traits
+                    </th>
+                    <th>
+                        Percentile Score
+                    </th>
+                </tr>
+                {% for perc,score in result['percentiles'].items() %}
+                    <tr>
+                        <td align="center">{{perc[0]}}</td>
+                        <td align="center">{{score}}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <br/>
+            <table border='1' style="width: 300px;">
+                <tr>
+                    <th>
+                        Traits
+                    </th>
+                    <th>
+                        Trait Score
+                    </th>
+                </tr>
+                {% for perc,score in result['scores'].items() %}
+                    <tr>
+                        <td align="center">{{perc[0]}}</td>
+                        <td align="center">{{score}}</td>
+                    </tr>
+                {% endfor %}
+
+            </table>
+            <br/>
+            Recommendations
+            <table border='1' style="width: 300px;">
+                <tr>
+                    <th>
+                        UserId
+                    </th>
+                    <th>
+                        Openness
+                    </th>
+                    <th>
+                        Consentiousness
+                    </th>
+                    <th>
+                        Extrovert
+                    </th>
+                    <th>
+                        Agressiveness
+                    </th>
+                    <th>
+                        Neutral
+                    </th>
+                </tr>
+                {% for user in result['recommendations'] %}
+                    <tr>
+                        <td align="center">{{user['UserId']}}</td>
+                        <td align="center">{{user['sOPN']}}</td>
+                        <td align="center">{{user['sCON']}}</td>
+                        <td align="center">{{user['sEXT']}}</td>
+                        <td align="center">{{user['sAGR']}}</td>
+                        <td align="center">{{user['sNEU']}}</td>
+                    </tr>
+                {% endfor %}
+            </table>   
+        </div>
+    </body>
+</html>
